@@ -230,6 +230,7 @@ public void updateAttackLists() {
 			attackedByBlack[i][j] = false;
 		}
 	}
+	
 	for (Piece temp : pieces) {
 		if (temp.getColor()) {
 			//For white pieces
@@ -260,14 +261,11 @@ public void updateAttackLists() {
 				}
 				break;
 			case KING:
-				//TODO: Figure out a better way to optimise this. 
-				//Currently the script ignores kings until after this part is done, so that
-				//the king will not be allowed to enter an attacked space.
 				break;
 			default:
 				for (Pair<Integer, Integer> pair : temp.getPossibleMoves()) {
 					if(!isOutOfBounds(new Space(temp.getRow()+pair.getKey(), temp.getCol()+pair.getValue())) && hasLineOfSight(new Space(temp.getRow(), temp.getCol()), pair.getKey(), pair.getValue())) { 
-						attackedByWhite[temp.getRow()+pair.getKey()][temp.getCol()+pair.getValue()] = true; //TODO: Could be severly optimised
+						attackedByWhite[temp.getRow()+pair.getKey()][temp.getCol()+pair.getValue()] = true; 
 					}
 				}
 			}
@@ -301,14 +299,11 @@ public void updateAttackLists() {
 				}
 				break;
 			case KING:
-				//Figure out a better way to optimise this. 
-				//Currently the script ignores kings until after this part is done, so that
-				//the king will not be allowed to enter an attacked space.
 				break;
 				default:
 					for (Pair<Integer, Integer> pair : temp.getPossibleMoves()) {
 						if(!isOutOfBounds(new Space(temp.getRow()+pair.getKey(), temp.getCol()+pair.getValue())) && hasLineOfSight(new Space(temp.getRow(), temp.getCol()), pair.getKey(), pair.getValue())) { 
-							attackedByBlack[temp.getRow()+pair.getKey()][temp.getCol()+pair.getValue()] = true; //TODO: Could be severly optimised
+							attackedByBlack[temp.getRow()+pair.getKey()][temp.getCol()+pair.getValue()] = true; 
 					}
 				}
 			}
@@ -316,14 +311,14 @@ public void updateAttackLists() {
 	}
 	for (Piece temp : pieces) {
 		if (temp.getType() == PieceType.KING) {
-			if (temp.getColor()) {
+			if (temp.getColor()) { 
 				for (Pair<Integer, Integer> pair : temp.getPossibleMoves()) {
 					if(!isOutOfBounds(new Space(temp.getRow()+pair.getKey(), temp.getCol()+pair.getValue())) && !attackedByBlack[temp.getRow()+pair.getKey()][temp.getCol()+pair.getValue()]) { 
 						attackedByWhite[temp.getRow()+pair.getKey()][temp.getCol()+pair.getValue()] = true; 
 					}
 				}
 			}
-			else {
+			else { 
 				for (Pair<Integer, Integer> pair : temp.getPossibleMoves()) {
 					if(!isOutOfBounds(new Space(temp.getRow()+pair.getKey(), temp.getCol()+pair.getValue())) && !attackedByWhite[temp.getRow()+pair.getKey()][temp.getCol()+pair.getValue()]) { 
 						attackedByBlack[temp.getRow()+pair.getKey()][temp.getCol()+pair.getValue()] = true; 

@@ -1,5 +1,7 @@
 package starter;
 
+import java.io.File;
+
 public class MainApplication extends GraphicsApplication{
 	public static final int WINDOW_WIDTH = 900;
 	public static final int WINDOW_HEIGHT = 900;
@@ -21,6 +23,16 @@ public class MainApplication extends GraphicsApplication{
 	
 	public void run() {
 		System.out.println("Welcome to the Custom Chess Game!");
+		
+		// Below is kept for testing purposes right now
+		File custom_file = new File("Custom_Piece.txt");
+		if (custom_file.exists()) {
+			System.out.println("Custom piece file found! Custom chess piece has been loaded in.");
+		}
+		else {
+			System.out.println("No custom piece file found.");
+		}
+		
 		chessPane = new ChessboardPane(this);
 		menu = new MainMenuPane(this);
 		piecePane = new PieceShopPane(this);

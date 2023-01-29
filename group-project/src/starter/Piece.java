@@ -1,6 +1,9 @@
 package starter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import javafx.util.Pair;
+import java.util.Scanner;
 
 public class Piece {
 	
@@ -33,6 +36,29 @@ public class Piece {
 			cost = 7;
 		case KING: 
 			cost = 0; //Each player MUST have a King and automatically starts with one
+		case CUSTOM:
+			// If a file exists for a custom chess piece, read the file and assign the cost
+			File custom_file = new File("Custom_Piece.txt");
+			if (custom_file.exists()) {
+				try {
+					Scanner read_file = new Scanner(custom_file);
+					while (read_file.hasNextLine() ) {
+						String line = read_file.nextLine();
+						if (line.matches(".*Cost.*")) {
+							String parse[] = line.split("\s"); // File format: Cost 1
+							cost = Integer.parseInt(parse[1]);
+							read_file.close();
+							break;
+						}
+					}
+				} catch (FileNotFoundException e) {
+					System.out.println("An error occurred.");
+					e.printStackTrace();
+				}
+			}
+			else {
+				cost = 0; // If no custom file exists, automatically set Custom piece to 0 cost
+			}
 		}
 		setPossibleMoves(type);
 	}
