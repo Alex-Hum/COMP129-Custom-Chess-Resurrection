@@ -1,0 +1,5 @@
+Vertical 1
+Horizontal 2
+Diagonal 4
+Cost 3
+Move Backwards True
