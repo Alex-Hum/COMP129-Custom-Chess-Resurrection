@@ -93,6 +93,39 @@ public class Piece {
 		return type;
 	}
 	
+	private ArrayList<Pair<Integer, Integer>> calcMovement(String movement_string)
+	{
+		ArrayList<Pair<Integer, Integer>> movement = new ArrayList<Pair<Integer, Integer>>();
+		String spaces[] = movement_string.split("\s"); // Format: Vertical 1 -> movement number is always spaces[1]
+		
+		for (int i = 1; i <= Integer.parseInt(spaces[1]); i++) {
+			if (spaces[0].matches(".*Vertical.*")) {
+				Pair<Integer, Integer> foward_move = new Pair<Integer, Integer> (-i, 0); // Going forward in a straight line
+				Pair<Integer, Integer> backward_move = new Pair<Integer, Integer> (i, 0); // Going backwards in a straight line
+				movement.add(foward_move);
+				movement.add(backward_move);
+			}
+			else if (spaces[0].matches(".*Horizontal.*")) {
+				Pair<Integer, Integer> right_move = new Pair<Integer, Integer> (0, -i); // Going to the right in a straight line
+				Pair<Integer, Integer> left_move = new Pair<Integer, Integer> (0, i); // Going to the left in a straight line
+				movement.add(right_move);
+				movement.add(left_move);
+			}
+			else {
+				Pair<Integer, Integer> diagonal_right = new Pair<Integer, Integer> (-i, -i); // Going forward diagonally to the right
+				Pair<Integer, Integer> diagonal_left = new Pair<Integer, Integer> (-i, i); // Going forward diagonally to the left
+				Pair<Integer, Integer> diagonal_back_right = new Pair<Integer, Integer> (i, -i); // Going backwards diagonally to the right
+				Pair<Integer, Integer> diagonal_back_left = new Pair<Integer, Integer> (i, i); // Going backwards diagonally to the right
+				movement.add(diagonal_right);
+				movement.add(diagonal_left);
+				movement.add(diagonal_back_right);
+				movement.add(diagonal_back_left);
+			}
+		}
+		
+		return movement;
+	}
+	
 	public void setPossibleMoves(PieceType type) //Sets Possible Moves for each Piece
 	{
 		switch(type)
@@ -208,6 +241,28 @@ public class Piece {
 			PossibleMoves.add(move6);
 			PossibleMoves.add(move7);
 			PossibleMoves.add(move8);
+			break;
+		case CUSTOM:
+			File custom_file = new File("Custom_Piece.txt");
+			if (custom_file.exists()) {
+				try {
+					Scanner read_file = new Scanner(custom_file);
+					while (read_file.hasNextLine()) {
+						String line = read_file.nextLine();
+						if (line.matches(".*Cost.*")) {
+							read_file.close();
+							break;
+						}
+						else {
+							PossibleMoves.addAll(calcMovement(line));
+						}
+					}
+				}
+				catch (FileNotFoundException e) {
+					System.out.println("An error occurred.");
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	

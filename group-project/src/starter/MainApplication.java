@@ -2,6 +2,8 @@ package starter;
 
 import java.io.File;
 
+import javafx.util.Pair;
+
 public class MainApplication extends GraphicsApplication{
 	public static final int WINDOW_WIDTH = 900;
 	public static final int WINDOW_HEIGHT = 900;
@@ -31,6 +33,13 @@ public class MainApplication extends GraphicsApplication{
 		}
 		else {
 			System.out.println("No custom piece file found.");
+		}
+		
+		// Place holder code to double check that the movement for custom chess piece is correct > WILL REMOVE LATER!
+		System.out.println();
+		Piece test = new Piece(0, 0, PieceType.CUSTOM, true);
+		for (Pair<Integer, Integer> asdf : test.getPossibleMoves()) {
+			System.out.println(asdf);
 		}
 		
 		chessPane = new ChessboardPane(this);
