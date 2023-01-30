@@ -7,6 +7,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -404,6 +407,41 @@ public class GraphicsGame extends GraphicsProgram implements ActionListener{
 	            //Piece.Piece()
 			//}
 		//);
+		
+		File custom_file = new File("Custom_Piece.txt");
+		if (custom_file.exists()) {
+			JLabel Custom = new JLabel("Custom");
+			JLabel CustomC = new JLabel();
+			
+			Custom.setFont(new Font("TimesNewRoman", 15, 15));
+			Custom.setForeground(Color.BLACK);
+			Custom.setBounds(0, 280, 100, 100);
+			try {
+				Scanner read_file = new Scanner(custom_file);
+				while (read_file.hasNextLine() ) {
+					String line = read_file.nextLine();
+					if (line.matches(".*Cost.*")) {
+						String parse[] = line.split("\s"); // File format: Cost 1
+						CustomC.setText(parse[1]);
+						read_file.close();
+						break;
+					}
+				}
+			} catch (FileNotFoundException e) {
+				System.out.println("An error occurred.");
+				e.printStackTrace();
+			}
+			
+			CustomC.setFont(new Font("TimesNewRoman", 15, 15));
+			CustomC.setForeground(Color.BLACK);
+			CustomC.setBounds(130, 280, 100, 100);
+			JButton BC = new JButton("Buy");
+			BC.setBounds(260, 160, 100, 50);
+			
+			firstPanel.add(Custom);
+			firstPanel.add(CustomC);
+		}
+		
 		firstPanel.add(tital);
 		firstPanel.add(Name);
 		firstPanel.add(Cost);
@@ -417,6 +455,7 @@ public class GraphicsGame extends GraphicsProgram implements ActionListener{
 		firstPanel.add(RookC);
 		firstPanel.add(Queen);
 		firstPanel.add(QueenC);
+		
 		shop.setContentPane(firstPanel);
 		shop.setVisible(true);
 		printBoard();

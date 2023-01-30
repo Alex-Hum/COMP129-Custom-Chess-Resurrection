@@ -35,13 +35,6 @@ public class MainApplication extends GraphicsApplication{
 			System.out.println("No custom piece file found.");
 		}
 		
-		// Place holder code to double check that the movement for custom chess piece is correct > WILL REMOVE LATER!
-		System.out.println();
-		Piece test = new Piece(0, 0, PieceType.CUSTOM, true);
-		for (Pair<Integer, Integer> asdf : test.getPossibleMoves()) {
-			System.out.println(asdf);
-		}
-		
 		chessPane = new ChessboardPane(this);
 		menu = new MainMenuPane(this);
 		piecePane = new PieceShopPane(this);

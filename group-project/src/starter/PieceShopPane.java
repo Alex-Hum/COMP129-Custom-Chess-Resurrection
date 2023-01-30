@@ -1,6 +1,7 @@
 package starter;
 
 import java.awt.Color;
+
 import java.awt.Font;
 import java.awt.Point;
 import java.lang.Math;
@@ -9,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -34,6 +37,8 @@ public class PieceShopPane extends GraphicsPane implements ActionListener {
 	private final GButton Br = new GButton("Buy", 820, 200, 70, 30);
 	private final GButton Bb = new GButton("Buy", 820, 160, 70, 30);
 	private final GButton Bq = new GButton("Buy", 820, 240, 70, 30);
+	private final GButton Bc = new GButton("Buy", 820, 280, 70, 30);
+
 	//total cost
 	int TotalCost_p1 = 35;
 	int TotalCost_p2 = 35;
@@ -70,6 +75,28 @@ public class PieceShopPane extends GraphicsPane implements ActionListener {
 	public PieceShopPane(MainApplication app) {
 			program = app;
 			p = program.getBoard();
+	}
+	private String calcCustomCost() {
+		String cost = "";
+		File custom_file = new File("Custom_Piece.txt");
+		
+		try {
+			Scanner read_file = new Scanner(custom_file);
+			while (read_file.hasNextLine() ) {
+				String line = read_file.nextLine();
+				if (line.matches(".*Cost.*")) {
+					String parse[] = line.split("\s"); // File format: Cost 1
+					cost = parse[1];
+					read_file.close();
+					break;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+		
+		return cost;
 	}
 	public void printBoard() {
 		int x = BOARD_SHIFT;
@@ -279,7 +306,22 @@ public class PieceShopPane extends GraphicsPane implements ActionListener {
 		QueenC.setFont(new Font("TimesNewRoman", 15, 15));
 		QueenC.setColor(Color.BLACK);
 		
-		
+		// Only add option to buy a custom chess piece if the file for a custom piece exists
+		File custom_file = new File("Custom_Piece.txt");
+		if (custom_file.exists()) {
+			GLabel Custom = new GLabel("Custom", 680,300);
+			Custom.setFont(new Font("TimesNewRoman", 15, 15));
+			Custom.setColor(Color.BLACK);
+
+			GLabel CustomC = new GLabel(calcCustomCost(), 780, 300);
+			
+			CustomC.setFont(new Font("TimesNewRoman", 15, 15));
+			CustomC.setColor(Color.BLACK);
+			
+			program.add(Custom);
+			program.add(CustomC);
+			program.add(Bc);
+		}
 		
 		program.add(tital);
 		program.add(bag);
@@ -396,6 +438,13 @@ public class PieceShopPane extends GraphicsPane implements ActionListener {
 					toAdd.setBounds(lastX, lastY, 42,42);
 					program.add(toAdd);
 				}
+				if (obj == Bc) {//add custom
+					pieceT = 5;
+					filePath = new String("White_Custom.png");
+					toAdd = new GImage(filePath);
+					toAdd.setBounds(lastX, lastY, 42,42);
+					program.add(toAdd);
+				}
 				if(obj == toAdd) {
 					pieceIcon = 1;
 					toDrag = program.getElementAt(e.getX(), e.getY());
@@ -442,6 +491,13 @@ public class PieceShopPane extends GraphicsPane implements ActionListener {
 				if(obj == Bq) {//add queen
 					pieceT = 4;
 					filePath = new String("Black_Queen.png");
+					toAdd = new GImage(filePath);
+					toAdd.setBounds(lastX, lastY, 42,42);
+					program.add(toAdd);
+				}
+				if (obj == Bc) {//add custom
+					pieceT = 5;
+					filePath = new String("Black_Custom.png");
 					toAdd = new GImage(filePath);
 					toAdd.setBounds(lastX, lastY, 42,42);
 					program.add(toAdd);
@@ -699,6 +755,49 @@ public class PieceShopPane extends GraphicsPane implements ActionListener {
 	    		}
 	    		else if(tf == 1) {
 	    			TotalCost_p1 = TotalCost_p1 - 7;
+	    	    	//Print Total Cost
+	    			program.remove(cost1);
+	    			ShowTotalCost();
+	    			}
+	    		}
+	    	else if(TotalCost < 0 ){
+	    		System.out.println("Cannot bought this piece.");
+				program.remove(toAdd);
+			}
+	    }
+	    //add custom
+	    if(pieceT == 5 && player == 2) {
+	    	Integer cost = Integer.parseInt(calcCustomCost());
+	    	int TotalCost = TotalCost_p2 - cost;
+	    	if(TotalCost >= 0) {
+	    		p.addPiece(x, y, PieceType.CUSTOM, false);
+	    		tf = p.a;
+	    		if (tf == 0) {
+	    			program.remove(toAdd);
+	    		}
+	    		else if(tf == 1) {
+	    			TotalCost_p2 = TotalCost_p2 - cost;
+	    	    	//Print Total Cost
+	    			program.remove(cost2);
+	    			ShowTotalCost();
+	    			}
+	    		}
+	    	else if(TotalCost < 0 ){
+	    		System.out.println("Cannot bought this piece.");
+				program.remove(toAdd);
+			}
+	    }
+	    if(pieceT == 5 && player == 1) {
+	    	Integer cost = Integer.parseInt(calcCustomCost());
+	    	int TotalCost = TotalCost_p1 - cost;
+	    	if(TotalCost >= 0) {
+	    		p.addPiece(x, y, PieceType.CUSTOM, true);
+	    		tf = p.a;
+	    		if (tf == 0) {
+	    			program.remove(toAdd);
+	    		}
+	    		else if(tf == 1) {
+	    			TotalCost_p1 = TotalCost_p1 - cost;
 	    	    	//Print Total Cost
 	    			program.remove(cost1);
 	    			ShowTotalCost();
